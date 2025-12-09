@@ -1,0 +1,21 @@
+{
+    "@@locale": "ar",
+    "appTitle": "رؤية الإجهاد",
+    "onboardingTitle": "مرحبا بك في رؤية الإجهاد",
+    "onboardingDescription": "كشف الإجهاد في الوقت الحقيقي للسلامة الصناعية.",
+    "getStarted": "ابدأ",
+    "startDetection": "ابدأ الكشف",
+    "settings": "الإعدادات",
+    "history": "السجل",
+    "industrialMode": "الوضع الصناعي",
+    "language": "اللغة",
+    "reset": "إعادة تعيين",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "fatigueLevel": "مستوى الإجهاد",
+    "normal": "طبيعي",
+    "drowsy": "نعاس",
+    "alert": "تنبيه!",
+    "exportPdf": "تصدير PDF",
+    "notifications": "الإشعارات"
+}

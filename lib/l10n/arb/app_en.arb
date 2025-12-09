@@ -1,0 +1,21 @@
+{
+    "@@locale": "en",
+    "appTitle": "FatigueVision",
+    "onboardingTitle": "Welcome to FatigueVision",
+    "onboardingDescription": "Real-time fatigue detection for industrial safety.",
+    "getStarted": "Get Started",
+    "startDetection": "Start Detection",
+    "settings": "Settings",
+    "history": "History",
+    "industrialMode": "Industrial Mode",
+    "language": "Language",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "fatigueLevel": "Fatigue Level",
+    "normal": "Normal",
+    "drowsy": "Drowsy",
+    "alert": "ALERT!",
+    "exportPdf": "Export PDF",
+    "notifications": "Notifications"
+}

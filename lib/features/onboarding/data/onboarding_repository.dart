@@ -1,0 +1,16 @@
+import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+@injectable
+class OnboardingRepository {
+  final SharedPreferences _prefs;
+  static const String _key = 'has_seen_onboarding';
+
+  OnboardingRepository(this._prefs);
+
+  bool get hasSeenOnboarding => _prefs.getBool(_key) ?? false;
+
+  Future<void> completeOnboarding() async {
+    await _prefs.setBool(_key, true);
+  }
+}
