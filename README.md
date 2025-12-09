@@ -1,75 +1,72 @@
-# FatigueVision 4.0
+# FatigueVision - Driver Safety System
 
-![FatigueVision Mockup](./fatigue_vision_mockup.jpeg)
+FatigueVision is a real-time mobile application designed to detect driver drowsiness and prevent accidents using computer vision and machine learning.
 
-**FatigueVision** is a production-grade Proof of Concept (POC) for real-time industrial fatigue detection. Built with Flutter, it leverages on-device Machine Learning (ML Kit) to monitor driver alertness through Eye Aspect Ratio (EAR) analysis.
+![App Screenshot](assets/images/app_icon.png)
 
-This project demonstrates **Senior-Level Flutter Development** practices, including Clean Architecture, Riverpod for state management, and strict separation of concerns.
+## 🛠️ Technology Stack
 
-## 🚀 Key Features
+This project is built using **Flutter** and leverages several powerful libraries to ensure performance and reliability:
 
-*   **Real-Time Detection**: Analyzes facial landmarks at 10-30 FPS to detect drowsiness.
-*   **Industrial Design**: High-contrast, glassmorphism UI optimized for visibility.
-*   **Smart History**: Tracks fatigue events locally and provides trends.
-*   **Compliance Ready**: One-tap PDF export for safety logs.
-*   **Internationalization**: Fully localized (English/Arabic).
+- **Framework**: [Flutter](https://flutter.dev/) (SDK ^3.10.1)
+- **Language**: Dart
+- **State Management**: [Riverpod](https://riverpod.dev/) (`flutter_riverpod`, `riverpod_annotation`)
+- **Computer Vision**: [Google ML Kit](https://developers.google.com/ml-kit) (`google_mlkit_face_detection`)
+- **Hardware Access**:
+  - `camera`: For real-time video feed.
+  - `audioplayers`: For audio alerts.
+  - `vibration`: For haptic feedback.
+  - `wakelock_plus`: To keep the screen awake during monitoring.
+- **Architecture**: Domain-Driven Design (DDD) principles with Dependency Injection (`injectable`, `get_it`).
+- **Navigation**: `go_router` for deep linking and declarative routing.
+- **Charts**: `fl_chart` for visualizing fatigue history.
 
-## 🛠 Tech Stack
+## 🧠 How It Works (The Logic)
 
-*   **Architecture**: Clean Architecture (Domain, Data, Presentation)
-*   **State Management**: `flutter_riverpod` (v2.0+) with code generation
-*   **DI**: `get_it` + `injectable`
-*   **ML**: `google_mlkit_face_detection`
-*   **Data Models**: `freezed` + `json_serializable`
-*   **Navigation**: `go_router`
-*   **Testing**: `flutter_test`, `mocktail`
-*   **Lints**: `very_good_analysis`
+The core functionality revolves around the **Eye Aspect Ratio (EAR)**, a scalar value that indicates the openness of the eye.
 
-## 🏗 Directory Structure
+### 1. Face Detection & Landmark Extraction
+The app uses **Google ML Kit** to detect faces in real-time from the camera stream. For each detected face, it extracts specific **landmarks** (points on the face), specifically focusing on the contours of the eyes.
 
+### 2. Eye Aspect Ratio (EAR) Calculation
+The EAR is calculated using the distances between specific points on the eyelid contours:
+
+```dart
+EAR = (||p2-p6|| + ||p3-p5||) / (2 * ||p1-p4||)
 ```
-lib/
-├── app/            # App entry point & global providers
-├── config/         # Routing, DI, Theme setup
-├── core/           # Shared utilities (Extensions, Widgets, Services)
-├── features/       # Feature-based modules (Clean Arch)
-│   ├── fatigue/    # Logic for detection (Camera, ML, EAR)
-│   ├── history/    # Storage & PDF generation
-│   ├── onboarding/ # Intro flow
-│   └── settings/   # Theme & Locale
-└── l10n/           # ARB Localization files
-```
+- **Vertical Distances**: The distance between the top and bottom eyelids (p2-p6 and p3-p5).
+- **Horizontal Distance**: The distance between the left and right corners of the eye (p1-p4).
 
-## ⚡ Getting Started
+When an eye is open, the EAR is relatively constant. When an eye closes (blinks or drowsiness), the vertical distance decreases towards zero, causing the EAR to drop significantly.
 
-1.  **Prerequisites**: Flutter SDK (Stable), Android Studio / VS Code.
-2.  **Dependencies**:
-    ```bash
-    flutter pub get
-    ```
-3.  **Code Generation** (Required for DI/Riverpod):
-    ```bash
-    dart run build_runner build --delete-conflicting-outputs
-    ```
-4.  **Run**:
-    ```bash
-    flutter run
-    ```
+### 3. Smoothing & Thresholds
+To prevent false positives from normal blinking, we calculate a rolling average of the EAR over the last 10 frames.
 
-## 🧪 Testing
+This smoothed EAR is then compared against a configurable sensitivity threshold:
+- **Low Sensitivity**: Threshold < 0.18 (Requires eyes to be very closed)
+- **Medium Sensitivity**: Threshold < 0.22 (Default)
+- **High Sensitivity**: Threshold < 0.26 (More sensitive to slight drooping)
 
-Run the comprehensive test suite:
-```bash
-flutter test
-```
+### 4. Alert System
+If the EAR drops below the threshold for a sustained period (indicating drowsiness rather than a blink), the app triggers an alert:
+- **Audio**: Plays a loud alarm sound.
+- **Haptic**: Vibrates the device.
+- **Visual**: The UI flashes red.
 
-## 📦 Deliverables
-- [x] Full Source Code
-- [x] APK Ready (run `flutter build apk`)
-- [x] Loom Video Script (`LOOM_SCRIPT.md`)
-- [x] Design Assets
+## 🤖 Interaction with Machine Learning (ML)
 
----
-*Built by [Your Name] for [Company Name].*
-# FatigueVision
-# FatigueVision
+While this app does not use a Generative Large Language Model (LLM) for its core detection logic, it relies heavily on **On-Device Machine Learning**.
+
+1.  **Input**: The raw camera frame (YUV/NV21 format) is captured.
+2.  **Preprocessing**: The image is converted to an `InputImage` format compatible with ML Kit, handling rotation and metadata.
+3.  **Inference**: The **ML Kit Face Detection** model runs on the device's NPU/CPU. It inference the image to find face bounding boxes and 2D landmarks.
+4.  **Output**: The model returns a list of faces with coordinates for eyes, nose, mouth, etc., which our `EARCalculator` uses.
+
+This on-device approach ensures:
+- **Privacy**: No video data leaves the phone.
+- **Speed**: Real-time processing (30+ FPS) without network latency.
+- **Offline Capability**: Works perfectly without an internet connection.
+
+## 📝 Summary
+
+**FatigueVision** is a robust safety tool that combines modern mobile development (Flutter) with efficient on-device Machine Learning (Google ML Kit). By continuously analyzing facial landmarks and calculating the Eye Aspect Ratio, it serves as a vigilant co-pilot, alerting drivers the moment signs of fatigue are detected.
