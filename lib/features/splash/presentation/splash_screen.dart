@@ -1,8 +1,10 @@
+import 'dart:async';
+
+import 'package:fatigue_vision/config/injection.dart';
+import 'package:fatigue_vision/features/onboarding/data/onboarding_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fatigue_vision/config/injection.dart';
-import 'package:fatigue_vision/features/onboarding/data/onboarding_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateNext();
+    unawaited(_navigateNext());
   }
 
   Future<void> _navigateNext() async {

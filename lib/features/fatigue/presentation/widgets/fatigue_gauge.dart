@@ -2,14 +2,14 @@ import 'package:fatigue_vision/features/fatigue/presentation/fatigue_controller.
 import 'package:flutter/material.dart';
 
 class FatigueGauge extends StatelessWidget {
-  final double earValue;
-  final FatigueLevel level;
-
   const FatigueGauge({
-    super.key,
     required this.earValue,
     required this.level,
+    super.key,
   });
+
+  final double earValue;
+  final FatigueLevel level;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class FatigueGauge extends StatelessWidget {
     // 0.22 is threshold.
     // 0.15 -> 0% (Closed)
     // 0.35 -> 100% (Open)
-    double progress = (earValue - 0.15) / (0.35 - 0.15);
+    var progress = (earValue - 0.15) / (0.35 - 0.15);
     progress = progress.clamp(0.0, 1.0);
 
     return SizedBox(

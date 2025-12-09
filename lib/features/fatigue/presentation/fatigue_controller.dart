@@ -1,15 +1,16 @@
 import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:fatigue_vision/config/injection.dart';
 import 'package:fatigue_vision/core/services/alert_service.dart';
 import 'package:fatigue_vision/features/fatigue/data/services/face_detector_service.dart';
 import 'package:fatigue_vision/features/fatigue/domain/logic/ear_calculator.dart';
-import 'package:fatigue_vision/features/history/data/history_repository.dart';
 import 'package:fatigue_vision/features/history/data/history_provider.dart';
+import 'package:fatigue_vision/features/history/data/history_repository.dart';
 import 'package:fatigue_vision/features/history/domain/entities/history_event.dart';
 import 'package:fatigue_vision/features/settings/presentation/settings_controller.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'fatigue_controller.freezed.dart';
 part 'fatigue_controller.g.dart';
@@ -88,18 +89,11 @@ class FatigueController extends _$FatigueController {
 
     // Get Settings
     final settings = ref.read(settingsProvider);
-    double threshold = 0.22;
-    switch (settings.sensitivity) {
-      case Sensitivity.low:
-        threshold = 0.18;
-        break;
-      case Sensitivity.medium:
-        threshold = 0.22;
-        break;
-      case Sensitivity.high:
-        threshold = 0.26;
-        break;
-    }
+    final threshold = switch (settings.sensitivity) {
+      Sensitivity.low => 0.18,
+      Sensitivity.medium => 0.22,
+      Sensitivity.high => 0.26,
+    };
 
     final level = smoothEAR < threshold
         ? FatigueLevel.drowsy
@@ -127,16 +121,22 @@ class FatigueController extends _$FatigueController {
 
       // Alert
       if (settings.enableAudio || settings.enableVibration) {
-        _alertService
-            ?.playAlert(); // Service handles vibration internally for now or we pass flags
+        unawaited(
+          _alertService?.playAlert(
+            enableAudio: settings.enableAudio,
+            enableVibration: settings.enableVibration,
+          ),
+        );
       }
 
       // Save History
-      _historyRepository?.saveEvent(
-        HistoryEvent(
-          date: now,
-          level: 'Drowsy',
-          ear: state.currentEAR,
+      unawaited(
+        _historyRepository?.saveEvent(
+          HistoryEvent(
+            date: now,
+            level: 'Drowsy',
+            ear: state.currentEAR,
+          ),
         ),
       );
 

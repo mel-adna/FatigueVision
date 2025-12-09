@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:fatigue_vision/core/widgets/glass_card.dart';
 import 'package:fatigue_vision/features/fatigue/presentation/fatigue_controller.dart';
 import 'package:fatigue_vision/features/fatigue/presentation/widgets/fatigue_gauge.dart';
+import 'package:fatigue_vision/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,15 +27,15 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initializeCamera();
-    WakelockPlus.enable();
+    unawaited(_initializeCamera());
+    unawaited(WakelockPlus.enable());
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller?.dispose();
-    WakelockPlus.disable();
+    unawaited(_controller?.dispose());
+    unawaited(WakelockPlus.disable());
     super.dispose();
   }
 
@@ -42,9 +45,9 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
 
     if (state == AppLifecycleState.inactive) {
       ref.read(fatigueControllerProvider.notifier).stop();
-      _controller?.dispose();
+      unawaited(_controller?.dispose());
     } else if (state == AppLifecycleState.resumed) {
-      _initializeCamera();
+      unawaited(_initializeCamera());
     }
   }
 
@@ -74,25 +77,36 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       });
 
       _startImageStream();
-    } catch (e) {
+    } on CameraException catch (e) {
+      debugPrint('Camera error: $e');
+    } on Exception catch (e) {
       debugPrint('Camera error: $e');
     }
   }
 
   void _startImageStream() {
     // Throttle processing to ~10fps to save CPU/Battery
-    int frameCount = 0;
-    _controller?.startImageStream((image) {
-      frameCount++;
-      if (frameCount % 3 != 0)
-        return; // Process every 3rd frame (assuming 30fps -> 10fps)
+    var frameCount = 0;
+    unawaited(
+      _controller?.startImageStream((image) {
+        frameCount++;
+        if (frameCount % 3 != 0) {
+          return; // Process every 3rd frame (assuming 30fps -> 10fps)
+        }
 
-      if (_controller != null) {
-        ref
-            .read(fatigueControllerProvider.notifier)
-            .processFrame(image, _controller!.description, _sensorOrientation);
-      }
-    });
+        if (_controller != null) {
+          unawaited(
+            ref
+                .read(fatigueControllerProvider.notifier)
+                .processFrame(
+                  image,
+                  _controller!.description,
+                  _sensorOrientation,
+                ),
+          );
+        }
+      }),
+    );
   }
 
   @override
@@ -119,7 +133,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               children: [
                 // Top Bar
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -131,8 +145,8 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                         ),
                         child: Text(
                           fatigueState.isScanning
-                              ? 'LIVE MONITORING'
-                              : 'PAUSED',
+                              ? context.l10n.liveMonitoring.toUpperCase()
+                              : context.l10n.paused.toUpperCase(),
                           style: const TextStyle(
                             color: Colors.greenAccent,
                             fontWeight: FontWeight.bold,
@@ -163,7 +177,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
 
                 // Bottom Dashboard
                 Padding(
-                  padding: const EdgeInsets.all(24.0),
+                  padding: const EdgeInsets.all(24),
                   child: GlassCard(
                     opacity: 0.3,
                     child: Row(
@@ -184,12 +198,12 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'DRIVER INTEGRITY',
+                                context.l10n.driverIntegrity.toUpperCase(),
                                 style: Theme.of(context).textTheme.labelSmall
                                     ?.copyWith(
                                       color: Colors.white70,
                                       fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.0,
+                                      letterSpacing: 1,
                                     ),
                               ),
                               const SizedBox(height: 4),
@@ -198,8 +212,8 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                                 child: Text(
                                   fatigueState.fatigueLevel ==
                                           FatigueLevel.normal
-                                      ? 'OPTIMAL'
-                                      : 'WARNING',
+                                      ? context.l10n.optimal.toUpperCase()
+                                      : context.l10n.warning.toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.w900,
@@ -208,7 +222,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                                             FatigueLevel.normal
                                         ? Colors.greenAccent
                                         : Colors.redAccent,
-                                    letterSpacing: 1.0,
+                                    letterSpacing: 1,
                                   ),
                                 ),
                               ),
@@ -219,21 +233,21 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
+                                  color: Colors.white.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Row(
+                                child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.face_retouching_natural,
                                       color: Colors.white70,
                                       size: 16,
                                     ),
-                                    SizedBox(width: 8),
+                                    const SizedBox(width: 8),
                                     Text(
-                                      'Keep face visible',
-                                      style: TextStyle(
+                                      context.l10n.keepFaceVisible,
+                                      style: const TextStyle(
                                         color: Colors.white70,
                                         fontSize: 12,
                                       ),
@@ -258,7 +272,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.red.withOpacity(0.5),
+                    color: Colors.red.withValues(alpha: 0.5),
                     width: 20,
                   ),
                 ),

@@ -1,9 +1,9 @@
+import 'package:fatigue_vision/features/settings/presentation/settings_controller.dart';
 import 'package:fatigue_vision/l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gap/gap.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -25,35 +25,51 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 children: [
                   // Avatar
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary, // Teal
-                      borderRadius: BorderRadius.circular(
-                        4,
-                      ), // Rounded square like GPT
+                  GestureDetector(
+                    onTap: () => context.push('/settings'),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary, // Teal
+                        borderRadius: BorderRadius.circular(
+                          4,
+                        ), // Rounded square like GPT
+                      ),
+                      child: const Icon(Icons.person, color: Colors.white),
                     ),
-                    child: const Icon(Icons.person, color: Colors.white),
                   ),
                   const Gap(12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'FatigueVision',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface,
-                        ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => context.push('/settings'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Consumer(
+                            builder: (context, ref, child) {
+                              final settings = ref.watch(settingsProvider);
+                              return Text(
+                                settings.userName,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.onSurface,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            },
+                          ),
+                          Text(
+                            context.l10n.driverSafetySystem,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        'Driver Safety System',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -84,9 +100,11 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const Gap(8),
                     Text(
-                      'Advanced Driver Safety',
+                      context.l10n.driverSafetySystem,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                     ),
                   ],
@@ -130,7 +148,7 @@ class HomeScreen extends ConsumerWidget {
                   _buildActionRow(
                     context,
                     icon: Icons.dashboard,
-                    title: 'Dashboard',
+                    title: context.l10n.dashboard,
                     onTap: () => context.push('/history'),
                   ),
                   const Gap(12),
@@ -179,7 +197,7 @@ class HomeScreen extends ConsumerWidget {
             const Spacer(),
             Icon(
               Icons.chevron_right,
-              color: theme.colorScheme.onSurface.withOpacity(0.5),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ],
         ),

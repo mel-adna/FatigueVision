@@ -2,8 +2,8 @@ import 'package:fatigue_vision/config/injection.dart';
 import 'package:fatigue_vision/features/onboarding/data/onboarding_repository.dart';
 import 'package:fatigue_vision/l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -33,7 +33,7 @@ class OnboardingScreen extends StatelessWidget {
 
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.all(32),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -84,7 +84,7 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ).animate().fadeIn(delay: 600.ms).slideY(begin: 1.0, end: 0),
+                  ).animate().fadeIn(delay: 600.ms).slideY(begin: 1, end: 0),
                   const SizedBox(height: 20),
                 ],
               ),

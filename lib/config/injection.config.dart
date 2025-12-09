@@ -9,15 +9,17 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:fatigue_vision/core/di/third_party_module.dart' as _i800;
+import 'package:fatigue_vision/core/services/alert_service.dart' as _i1028;
+import 'package:fatigue_vision/features/fatigue/data/services/face_detector_service.dart'
+    as _i552;
+import 'package:fatigue_vision/features/history/data/history_repository.dart'
+    as _i126;
+import 'package:fatigue_vision/features/onboarding/data/onboarding_repository.dart'
+    as _i1039;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
-
-import '../core/di/third_party_module.dart' as _i1048;
-import '../core/services/alert_service.dart' as _i428;
-import '../features/fatigue/data/services/face_detector_service.dart' as _i22;
-import '../features/history/data/history_repository.dart' as _i634;
-import '../features/onboarding/data/onboarding_repository.dart' as _i679;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -31,18 +33,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => thirdPartyModule.prefs,
       preResolve: true,
     );
-    gh.singleton<_i428.AlertService>(() => _i428.AlertService());
-    gh.singletonAsync<_i634.HistoryRepository>(
-      () => _i634.HistoryRepository.init(),
+    gh.singleton<_i1028.AlertService>(() => _i1028.AlertService());
+    gh.singletonAsync<_i126.HistoryRepository>(
+      () => _i126.HistoryRepository.init(),
     );
-    gh.lazySingleton<_i22.FaceDetectorService>(
-      () => _i22.FaceDetectorService(),
+    gh.lazySingleton<_i552.FaceDetectorService>(
+      () => _i552.FaceDetectorService(),
     );
-    gh.factory<_i679.OnboardingRepository>(
-      () => _i679.OnboardingRepository(gh<_i460.SharedPreferences>()),
+    gh.factory<_i1039.OnboardingRepository>(
+      () => _i1039.OnboardingRepository(gh<_i460.SharedPreferences>()),
     );
     return this;
   }
 }
 
-class _$ThirdPartyModule extends _i1048.ThirdPartyModule {}
+class _$ThirdPartyModule extends _i800.ThirdPartyModule {}

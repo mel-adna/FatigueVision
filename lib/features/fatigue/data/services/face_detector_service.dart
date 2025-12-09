@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:fatigue_vision/core/utils/camera_utils.dart';
 import 'package:fatigue_vision/features/fatigue/domain/entities/face_landmarks.dart';
@@ -11,7 +13,6 @@ class FaceDetectorService {
       enableContours: true,
       enableClassification:
           true, // For verification, though we calc EAR manually
-      performanceMode: FaceDetectorMode.fast, // Real-time
     ),
   );
 
@@ -48,13 +49,13 @@ class FaceDetectorService {
             .map((p) => FacePoint(p.x.toDouble(), p.y.toDouble()))
             .toList(),
       );
-    } catch (e) {
+    } on Exception {
       // Log error
       return null;
     }
   }
 
   void dispose() {
-    _detector.close();
+    unawaited(_detector.close());
   }
 }

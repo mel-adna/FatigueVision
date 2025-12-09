@@ -65,7 +65,7 @@ class CameraUtils {
     final size = Size(image.width.toDouble(), image.height.toDouble());
 
     // Force NV21 or YUV420
-    final format = InputImageFormat.nv21;
+    const format = InputImageFormat.nv21;
 
     final metadata = InputImageMetadata(
       size: size,

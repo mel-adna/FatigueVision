@@ -41,7 +41,7 @@ final class SettingsProvider
   }
 }
 
-String _$settingsHash() => r'16bc19c38d3803f62b7af9e91c3f49abafce86fd';
+String _$settingsHash() => r'0b893d7391772356c49b2cb92bc909a3a3442967';
 
 abstract class _$Settings extends $Notifier<SettingsState> {
   SettingsState build();
@@ -94,7 +94,7 @@ final class AppThemeModeProvider
   }
 }
 
-String _$appThemeModeHash() => r'c281d8984d064f68f4318113a1cfd5fd3b3f6dc0';
+String _$appThemeModeHash() => r'a8b366c7268abc85d046cf188e07c62892025218';
 
 abstract class _$AppThemeMode extends $Notifier<ThemeMode> {
   ThemeMode build();
@@ -146,7 +146,7 @@ final class AppLocaleProvider extends $NotifierProvider<AppLocale, ui.Locale?> {
   }
 }
 
-String _$appLocaleHash() => r'10fb308dfc59d18fc45c650a8089e2a8d9c19969';
+String _$appLocaleHash() => r'795ee99222af8241a575dcea90b04634cdd1ed7c';
 
 abstract class _$AppLocale extends $Notifier<ui.Locale?> {
   ui.Locale? build();

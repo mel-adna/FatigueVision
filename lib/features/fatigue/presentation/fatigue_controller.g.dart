@@ -41,7 +41,7 @@ final class FatigueControllerProvider
   }
 }
 
-String _$fatigueControllerHash() => r'f47f744846cfcd4bbaaa379115cd59562ba7a923';
+String _$fatigueControllerHash() => r'd65b2ae47dba6e4ae409d9d024ff8a5844ca0bd9';
 
 abstract class _$FatigueController extends $Notifier<FatigueState> {
   FatigueState build();

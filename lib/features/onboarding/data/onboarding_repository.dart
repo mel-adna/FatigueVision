@@ -2,11 +2,12 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
+@injectable
 class OnboardingRepository {
+  OnboardingRepository(this._prefs);
+
   final SharedPreferences _prefs;
   static const String _key = 'has_seen_onboarding';
-
-  OnboardingRepository(this._prefs);
 
   bool get hasSeenOnboarding => _prefs.getBool(_key) ?? false;
 

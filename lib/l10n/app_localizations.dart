@@ -205,6 +205,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// No description provided for @darkModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use darker colors for low-light'**
+  String get darkModeSubtitle;
+
+  /// No description provided for @detection.
+  ///
+  /// In en, this message translates to:
+  /// **'Detection'**
+  String get detection;
+
+  /// No description provided for @sensitivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitivity'**
+  String get sensitivity;
+
+  /// No description provided for @audioAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio Alerts'**
+  String get audioAlerts;
+
+  /// No description provided for @vibrationAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration Alerts'**
+  String get vibrationAlerts;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get arabic;
+
+  /// No description provided for @driverSafetySystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Safety System'**
+  String get driverSafetySystem;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @noDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
+  String get noDataAvailable;
+
+  /// No description provided for @alertsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts Today'**
+  String get alertsToday;
+
+  /// No description provided for @totalEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Events'**
+  String get totalEvents;
+
+  /// No description provided for @weeklyActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Activity'**
+  String get weeklyActivity;
+
+  /// No description provided for @recentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
+  String get recentActivity;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'FatigueVision Report'**
+  String get reportTitle;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get time;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get level;
+
+  /// No description provided for @ear.
+  ///
+  /// In en, this message translates to:
+  /// **'EAR'**
+  String get ear;
+
+  /// No description provided for @liveMonitoring.
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE MONITORING'**
+  String get liveMonitoring;
+
+  /// No description provided for @paused.
+  ///
+  /// In en, this message translates to:
+  /// **'PAUSED'**
+  String get paused;
+
+  /// No description provided for @driverIntegrity.
+  ///
+  /// In en, this message translates to:
+  /// **'DRIVER INTEGRITY'**
+  String get driverIntegrity;
+
+  /// No description provided for @optimal.
+  ///
+  /// In en, this message translates to:
+  /// **'OPTIMAL'**
+  String get optimal;
+
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'WARNING'**
+  String get warning;
+
+  /// No description provided for @keepFaceVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep face visible'**
+  String get keepFaceVisible;
+
+  /// No description provided for @sensitivityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'LOW'**
+  String get sensitivityLow;
+
+  /// No description provided for @sensitivityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'MEDIUM'**
+  String get sensitivityMedium;
+
+  /// No description provided for @sensitivityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'HIGH'**
+  String get sensitivityHigh;
 }
 
 class _AppLocalizationsDelegate

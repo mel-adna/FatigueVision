@@ -1,29 +1,36 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:vibration/vibration.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:vibration/vibration.dart';
 
 @singleton
 class AlertService {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
 
-  Future<void> playAlert() async {
+  Future<void> playAlert({
+    required bool enableAudio,
+    required bool enableVibration,
+  }) async {
     if (_isPlaying) return;
     _isPlaying = true;
 
-    // Play a beep sound (using a default URL or asset if available)
-    // For POC, we'll try to use a system sound or a generic url if no asset
-    // Ideally user should bundle an asset. Let's assume we need to add one.
-    // As a fallback, we just vibrate heavily which is more reliable without assets.
-
-    // Vibrate
-    final hasVibrator = await Vibration.hasVibrator();
-    if (hasVibrator == true) {
-      Vibration.vibrate(pattern: [500, 500, 500]);
+    if (enableVibration) {
+      final hasVibrator = await Vibration.hasVibrator();
+      if (hasVibrator) {
+        await Vibration.vibrate(pattern: [500, 500, 500]);
+      }
     }
 
-    // Play Sound (Placeholder for asset)
-    // await _audioPlayer.play(AssetSource('sounds/alarm.mp3'));
+    // Play Sound
+    if (enableAudio) {
+      try {
+        await _audioPlayer.play(AssetSource('sounds/alarm.mp3'));
+      } on Exception catch (e) {
+        // Fail silently if asset is missing, or log
+        debugPrint('Audio alert failed: $e');
+      }
+    }
 
     _isPlaying = false;
   }

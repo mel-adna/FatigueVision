@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:fatigue_vision/features/settings/presentation/settings_controller.dart';
 import 'package:fatigue_vision/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -10,6 +13,18 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(appThemeModeProvider);
     final locale = ref.watch(appLocaleProvider);
+
+    // Helper to localize sensitivity
+    String getSensitivityLabel(Sensitivity s) {
+      switch (s) {
+        case Sensitivity.low:
+          return context.l10n.sensitivityLow.toUpperCase();
+        case Sensitivity.medium:
+          return context.l10n.sensitivityMedium.toUpperCase();
+        case Sensitivity.high:
+          return context.l10n.sensitivityHigh.toUpperCase();
+      }
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -23,12 +38,29 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             _buildSection(
               context,
-              title: 'Appearance',
+              title: 'PROFILE',
+              children: [
+                _buildActionTile(
+                  context,
+                  title: 'User Name',
+                  subtitle: ref.watch(settingsProvider).userName,
+                  icon: Icons.person,
+                  onTap: () => _showEditNameDialog(
+                    context,
+                    ref,
+                    ref.read(settingsProvider).userName,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            _buildSection(
+              context,
+              title: context.l10n.appearance,
               children: [
                 _buildSwitchTile(
                   context,
-                  title: 'Dark Mode',
-                  subtitle: 'Use darker colors for low-light',
+                  title: context.l10n.darkMode,
                   icon: Icons.dark_mode,
                   value:
                       themeMode == ThemeMode.dark ||
@@ -40,12 +72,15 @@ class SettingsScreen extends ConsumerWidget {
                         .read(appThemeModeProvider.notifier)
                         .setTheme(val ? ThemeMode.dark : ThemeMode.light);
                   },
+                  subtitle: context.l10n.darkModeSubtitle,
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildActionTile(
                   context,
                   title: context.l10n.language,
-                  subtitle: locale?.languageCode == 'ar' ? 'Arabic' : 'English',
+                  subtitle: locale?.languageCode == 'ar'
+                      ? context.l10n.arabic
+                      : context.l10n.english,
                   icon: Icons.language,
                   onTap: () async {
                     await showDialog<void>(
@@ -60,7 +95,7 @@ class SettingsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(24.0),
+                            padding: const EdgeInsets.all(24),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +110,7 @@ class SettingsScreen extends ConsumerWidget {
                                 const SizedBox(height: 16),
                                 _buildLanguageOption(
                                   context,
-                                  title: 'English',
+                                  title: context.l10n.english,
                                   value: 'en',
                                   groupValue: currentLang,
                                   onConnect: () => ref
@@ -84,7 +119,7 @@ class SettingsScreen extends ConsumerWidget {
                                 ),
                                 _buildLanguageOption(
                                   context,
-                                  title: 'Arabic',
+                                  title: context.l10n.arabic,
                                   value: 'ar',
                                   groupValue: currentLang,
                                   onConnect: () => ref
@@ -104,16 +139,18 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             _buildSection(
               context,
-              title: 'Detection',
+              title: context.l10n.detection,
               children: [
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 4,
                   ),
-                  title: const Text('Sensitivity'),
+                  title: Text(context.l10n.sensitivity),
                   subtitle: Text(
-                    ref.watch(settingsProvider).sensitivity.name.toUpperCase(),
+                    getSensitivityLabel(
+                      ref.watch(settingsProvider).sensitivity,
+                    ),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -147,7 +184,7 @@ class SettingsScreen extends ConsumerWidget {
                         items: Sensitivity.values.map((s) {
                           return DropdownMenuItem(
                             value: s,
-                            child: Text(s.name.toUpperCase()),
+                            child: Text(getSensitivityLabel(s)),
                           );
                         }).toList(),
                       ),
@@ -157,22 +194,22 @@ class SettingsScreen extends ConsumerWidget {
                 const Divider(height: 1, indent: 56),
                 _buildSwitchTile(
                   context,
-                  title: 'Audio Alerts',
-                  subtitle: null,
+                  title: context.l10n.audioAlerts,
                   icon: Icons.volume_up,
                   value: ref.watch(settingsProvider).enableAudio,
-                  onChanged: (val) =>
-                      ref.read(settingsProvider.notifier).toggleAudio(val),
+                  onChanged: (val) => ref
+                      .read(settingsProvider.notifier)
+                      .toggleAudio(value: val),
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildSwitchTile(
                   context,
-                  title: 'Vibration Alerts',
-                  subtitle: null,
+                  title: context.l10n.vibrationAlerts,
                   icon: Icons.vibration,
                   value: ref.watch(settingsProvider).enableVibration,
-                  onChanged: (val) =>
-                      ref.read(settingsProvider.notifier).toggleVibration(val),
+                  onChanged: (val) => ref
+                      .read(settingsProvider.notifier)
+                      .toggleVibration(value: val),
                 ),
               ],
             ),
@@ -196,7 +233,9 @@ class SettingsScreen extends ConsumerWidget {
             title,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),
@@ -217,10 +256,10 @@ class SettingsScreen extends ConsumerWidget {
   Widget _buildSwitchTile(
     BuildContext context, {
     required String title,
-    String? subtitle,
     required IconData icon,
     required bool value,
-    required Function(bool) onChanged,
+    required ValueChanged<bool> onChanged,
+    String? subtitle,
   }) {
     return SwitchListTile(
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
@@ -230,7 +269,7 @@ class SettingsScreen extends ConsumerWidget {
       secondary: Icon(icon, color: Theme.of(context).colorScheme.onSurface),
       value: value,
       onChanged: onChanged,
-      activeColor: Theme.of(context).colorScheme.primary,
+      activeThumbColor: Theme.of(context).colorScheme.primary,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }
@@ -301,6 +340,48 @@ class SettingsScreen extends ConsumerWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEditNameDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String currentName,
+  ) {
+    final controller = TextEditingController(text: currentName);
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          title: const Text('Edit User Name'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter your name',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: Text(context.l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                final newName = controller.text.trim();
+                if (newName.isNotEmpty) {
+                  ref.read(settingsProvider.notifier).setUserName(newName);
+                }
+                context.pop();
+              },
+              child: Text(context.l10n.ok),
             ),
           ],
         ),

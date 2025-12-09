@@ -4,11 +4,12 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @singleton
+@singleton
 class HistoryRepository {
+  HistoryRepository(this._prefs);
+
   static const _key = 'history_events';
   final SharedPreferences _prefs;
-
-  HistoryRepository(this._prefs);
 
   @factoryMethod
   static Future<HistoryRepository> init() async {

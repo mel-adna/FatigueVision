@@ -16,7 +16,7 @@ class EARCalculator {
   /// Width = Horizontal distance.
 
   static double calculate(List<FacePoint> contour) {
-    if (contour.length < 6) return 0.0;
+    if (contour.length < 6) return 0;
 
     // Approximating based on typical 16-point contour from ML Kit
     // Vertical 1: Top (4) - Bottom (12)
@@ -51,7 +51,7 @@ class EARCalculator {
     final distV2 = p3.distanceTo(p5);
     final distH = p1.distanceTo(p4);
 
-    if (distH == 0) return 0.0;
+    if (distH == 0) return 0;
 
     return (distV1 + distV2) / (2.0 * distH);
   }

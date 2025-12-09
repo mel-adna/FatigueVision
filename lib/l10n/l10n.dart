@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:fatigue_vision/l10n/app_localizations.dart';
+import 'package:flutter/widgets.dart';
 
 export 'package:fatigue_vision/l10n/app_localizations.dart';
 
